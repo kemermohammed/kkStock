@@ -9,7 +9,7 @@ const cors = require('cors')
 const app = express();
 app.use(express.json(),
 cors({
-  origin: 'https://linex-inventory.vercel.app/', // Allow requests from frontend
+  origin: 'https://linex-inventory.vercel.app', // Allow requests from frontend
   credentials: true
 }));
 
