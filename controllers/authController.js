@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
         await newUser.save();
 
         const verificationToken = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '1d' });
-        const verificationLink = `${process.env.CLIENT_URL}/auth/verify-email?token=${verificationToken}`;
+        const verificationLink = `${process.env.CLIENT_URL}/verifyemail?token=${verificationToken}`;
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -69,12 +69,17 @@ exports.verifyEmail = async (req, res) => {
     try {
         const { token } = req.query;
 
+        console.log('Token:', token);
+
         if (!token) {
             return res.status(400).json({ message: 'Invalid or missing token' });
         }
 
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET); // Check if JWT_SECRET is set correctly
+        console.log('Decoded Token:', decoded);
+
         const user = await User.findByIdAndUpdate(decoded.id, { emailVerified: true }, { new: true });
+        console.log('User:', user);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -82,7 +87,7 @@ exports.verifyEmail = async (req, res) => {
 
         res.status(200).json({ message: 'Email verified successfully', user });
     } catch (error) {
-        console.error(error);
+        console.error('Error during email verification:', error); // Log detailed error
         res.status(500).json({ message: 'Server error' });
     }
 };

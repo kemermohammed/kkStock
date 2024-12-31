@@ -3,13 +3,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
+const productRoute = require('./routes/product')
+const cors = require('cors')
 
 const app = express();
-app.use(express.json());
+app.use(express.json(),
+cors({
+  origin: 'http://localhost:3000', // Allow requests from frontend
+  credentials: true
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/product',productRoute)
 
 // Database Connection
 mongoose
